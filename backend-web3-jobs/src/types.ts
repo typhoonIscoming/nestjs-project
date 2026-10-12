@@ -1,10 +1,11 @@
-export type Role = 'candidate' | 'employer' | 'admin';
-export type UserStatus = 'active' | 'pending' | 'banned';
-export type JobStatus = 'pending' | 'published' | 'offline' | 'rejected';
-export type JobType = 'full-time' | 'part-time' | 'contract' | 'internship';
-export type WorkMode = 'remote' | 'onsite' | 'hybrid';
-export type Experience = 'entry' | 'mid' | 'senior' | 'lead';
-export type ApplicationStatus = 'applied' | 'viewed' | 'interviewing' | 'rejected' | 'accepted';
+export type Role = "candidate" | "employer" | "admin";
+export type UserStatus = "active" | "pending" | "banned";
+export type JobStatus = "pending" | "published" | "offline" | "rejected";
+export type JobType = "full-time" | "part-time" | "contract" | "internship";
+export type WorkMode = "remote" | "onsite" | "hybrid";
+export type Experience = "entry" | "mid" | "senior" | "lead";
+export type ApplicationStatus =
+  "applied" | "viewed" | "interviewing" | "rejected" | "accepted";
 
 export interface User {
   id: number;
@@ -82,6 +83,6 @@ export interface Report {
   jobId: number;
   reason: string;
   reporter: string;
-  status: 'open' | 'resolved';
+  status: "open" | "resolved";
   createdAt: string;
 }
