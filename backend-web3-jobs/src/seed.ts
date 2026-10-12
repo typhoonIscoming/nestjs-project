@@ -1,0 +1,271 @@
+import { Application, Company, Job, Notification, Report, User } from './types';
+
+const DAY = 24 * 60 * 60 * 1000;
+const ago = (days: number) => new Date(Date.now() - days * DAY).toISOString();
+const ahead = (days: number) => new Date(Date.now() + days * DAY).toISOString();
+const logo = (text: string, bg: string) => `https://placehold.co/120x120/${bg}/ffffff?text=${text}`;
+
+export const CATEGORIES = ['Layer 1', 'Layer 2', 'DeFi', 'NFT', 'DAO', '智能合约', '安全', '研究'];
+
+export const seedCompanies = (): Company[] => [
+  {
+    id: 1,
+    name: 'LayerForge',
+    description: '专注可扩展性与信任最小化的区块链基础设施公司，为 Layer 1 / Layer 2 生态提供核心协议研发。',
+    industry: 'Layer 1',
+    website: 'https://layerforge.io',
+    logoUrl: logo('LF', '4f46e5'),
+    verified: true,
+    location: 'Remote · Global',
+    size: '50-200',
+    culture: '工程驱动、异步协作、公开透明。我们相信开源与长期主义，每位工程师都有机会参与协议级设计决策。',
+    values: ['开源优先', '安全第一', '长期主义', '异步协作'],
+  },
+  {
+    id: 2,
+    name: 'VaultWallet',
+    description: '自托管钱包与资产安全产品公司，服务千万级数字资产用户。',
+    industry: '安全',
+    website: 'https://vaultwallet.io',
+    logoUrl: logo('VW', '0f766e'),
+    verified: true,
+    location: 'Singapore',
+    size: '200-500',
+    culture: '以用户资产安全为最高优先级，倡导严谨的评审机制和清晰的产品思考。',
+    values: ['用户至上', '极致安全', '透明沟通'],
+  },
+  {
+    id: 3,
+    name: 'Northstar Finance',
+    description: '链上收益与资本效率平台，覆盖机构与零售用户。',
+    industry: 'DeFi',
+    website: 'https://northstar.finance',
+    logoUrl: logo('NS', '1d4ed8'),
+    verified: true,
+    location: 'Remote · US/EU',
+    size: '50-200',
+    culture: '快速迭代、数据驱动。鼓励成员对产品指标负责，团队分布在 12 个时区。',
+    values: ['数据驱动', '快速迭代', '结果导向'],
+  },
+  {
+    id: 4,
+    name: 'PixelDAO',
+    description: '面向创作者的 NFT 与社区治理平台。',
+    industry: 'NFT',
+    website: 'https://pixeldao.xyz',
+    logoUrl: logo('PD', '7c3aed'),
+    verified: false,
+    location: 'Berlin, Germany',
+    size: '10-50',
+    culture: '创作者优先，社区共治。我们以 DAO 方式运营，贡献即权益。',
+    values: ['社区共治', '创作者优先', '开放包容'],
+  },
+  {
+    id: 5,
+    name: 'RollupLabs',
+    description: '构建高性能 ZK Rollup 的 Layer 2 研发团队。',
+    industry: 'Layer 2',
+    website: 'https://rolluplabs.dev',
+    logoUrl: logo('RL', '059669'),
+    verified: true,
+    location: 'Remote · Global',
+    size: '50-200',
+    culture: '研究与工程并重，每周技术分享，鼓励论文复现与开源贡献。',
+    values: ['研究驱动', '工程卓越', '开放协作'],
+  },
+  {
+    id: 6,
+    name: 'AuditChain',
+    description: '专业智能合约审计与链上安全研究机构。',
+    industry: '安全',
+    website: 'https://auditchain.org',
+    logoUrl: logo('AC', 'b45309'),
+    verified: true,
+    location: 'Hong Kong',
+    size: '10-50',
+    culture: '深度技术、严谨交付，审计报告即产品。',
+    values: ['严谨', '专业', '客户信任'],
+  },
+];
+
+interface JobSeed extends Omit<Job, 'publishedAt' | 'expiresAt' | 'applicantCount' | 'status'> {
+  age: number;
+  status?: Job['status'];
+  applicants?: number;
+}
+
+const jobSeeds: JobSeed[] = [
+  {
+    id: 1, companyId: 1, title: 'Senior Solidity Engineer', category: '智能合约',
+    skills: ['Solidity', 'EVM', 'Foundry', 'Security'], location: 'Remote · Global',
+    salaryMin: 200000, salaryMax: 280000, jobType: 'full-time', workMode: 'remote', experience: 'senior',
+    description: '负责核心协议的智能合约设计、实现与审计配合，推动协议在多条 EVM 链上的安全落地。',
+    responsibilities: ['设计并实现核心协议合约', '编写 Foundry 测试与模糊测试', '与审计机构协作修复漏洞', '参与协议升级与治理提案评审'],
+    requirements: ['5 年以上 Solidity 开发经验', '熟悉 EVM 内部机制与 Gas 优化', '有主网合约上线经验', '熟悉常见合约漏洞模式'],
+    benefits: ['代币激励', '全球远程', '年度线下团建', '学习与会议津贴'], age: 1, applicants: 42,
+  },
+  {
+    id: 2, companyId: 2, title: 'Blockchain Product Manager', category: '安全',
+    skills: ['Product', 'Wallet', 'Research', 'Roadmap'], location: 'Singapore',
+    salaryMin: 150000, salaryMax: 210000, jobType: 'full-time', workMode: 'hybrid', experience: 'senior',
+    description: '主导自托管钱包的产品战略与路线图，协调工程、设计与安全团队交付高信任体验。',
+    responsibilities: ['制定产品路线图与里程碑', '撰写 PRD 并推动落地', '分析用户数据与行为漏斗', '与安全团队共同评审风险'],
+    requirements: ['4 年以上产品经验，其中 2 年 Web3', '理解钱包与私钥管理', '优秀的跨团队沟通能力', '数据分析能力'],
+    benefits: ['新加坡办公室', '商业医疗保险', '年终奖金', '代币激励'], age: 2, applicants: 28,
+  },
+  {
+    id: 3, companyId: 3, title: 'Frontend Engineer · DeFi', category: 'DeFi',
+    skills: ['React', 'TypeScript', 'wagmi', 'Next.js'], location: 'Remote · US/EU',
+    salaryMin: 130000, salaryMax: 190000, jobType: 'full-time', workMode: 'remote', experience: 'mid',
+    description: '为 DeFi 产品构建高性能、可访问的交易与收益仪表盘，与合约团队紧密协作。',
+    responsibilities: ['开发交易、质押、收益相关界面', '集成钱包连接与链上交互', '优化首屏性能与交互体验', '建设组件库与设计系统'],
+    requirements: ['3 年以上 React / TypeScript 经验', '熟悉 wagmi / viem / ethers', '重视可访问性与性能', '有 DeFi 产品使用经验'],
+    benefits: ['全远程', '弹性工时', '代币激励', '设备补贴'], age: 3, applicants: 57,
+  },
+  {
+    id: 4, companyId: 5, title: 'ZK Circuit Engineer', category: 'Layer 2',
+    skills: ['Rust', 'ZK', 'Circom', 'Cryptography'], location: 'Remote · Global',
+    salaryMin: 220000, salaryMax: 320000, jobType: 'full-time', workMode: 'remote', experience: 'lead',
+    description: '设计并优化 zkEVM 电路，推动证明系统性能提升，参与前沿密码学研究。',
+    responsibilities: ['设计与实现零知识电路', '优化证明生成与验证成本', '撰写技术文档与论文', '指导初级工程师'],
+    requirements: ['深入理解 SNARK / STARK', '精通 Rust', '有 ZK 项目开源贡献', '博士或同等研究经验优先'],
+    benefits: ['顶级薪酬', '论文发表支持', '全球远程', '代币激励'], age: 4, applicants: 19,
+  },
+  {
+    id: 5, companyId: 6, title: 'Smart Contract Auditor', category: '安全',
+    skills: ['Solidity', 'Audit', 'Fuzzing', 'Security'], location: 'Hong Kong',
+    salaryMin: 140000, salaryMax: 220000, jobType: 'full-time', workMode: 'onsite', experience: 'mid',
+    description: '审计 DeFi、NFT 与跨链协议合约，输出专业审计报告并与客户沟通修复方案。',
+    responsibilities: ['审计智能合约并撰写报告', '构建自动化分析与模糊测试工具', '参与客户沟通与修复验证', '研究最新攻击事件'],
+    requirements: ['2 年以上审计或安全研究经验', '熟悉常见漏洞与攻击手法', '有 CTF 或赏金经历优先', '良好的书面表达'],
+    benefits: ['香港办公室', '审计分成', '培训预算', '弹性休假'], age: 5, applicants: 33,
+  },
+  {
+    id: 6, companyId: 4, title: 'Community Lead (DAO)', category: 'DAO',
+    skills: ['Community', 'Governance', 'Discord', 'Content'], location: 'Berlin, Germany',
+    salaryMin: 70000, salaryMax: 105000, jobType: 'full-time', workMode: 'hybrid', experience: 'mid',
+    description: '运营 DAO 社区与治理流程，推动提案参与率与贡献者增长。',
+    responsibilities: ['运营 Discord 与论坛', '组织治理提案与投票', '策划线上线下活动', '追踪社区增长指标'],
+    requirements: ['2 年以上社区运营经验', '理解 DAO 治理机制', '英文流利，德语加分', '内容创作能力'],
+    benefits: ['DAO 代币', '柏林办公', '创意预算', '弹性工时'], age: 6, applicants: 24,
+  },
+  {
+    id: 7, companyId: 4, title: 'NFT Marketplace Engineer', category: 'NFT',
+    skills: ['TypeScript', 'Node.js', 'GraphQL', 'IPFS'], location: 'Remote · EU',
+    salaryMin: 100000, salaryMax: 150000, jobType: 'contract', workMode: 'remote', experience: 'mid',
+    description: '为创作者 NFT 市场开发后端服务与索引器，处理链上事件与元数据存储。',
+    responsibilities: ['构建链上事件索引服务', '设计 GraphQL API', '集成 IPFS 元数据存储', '保障服务稳定性'],
+    requirements: ['3 年以上后端经验', '熟悉 The Graph 或自建索引', '熟悉 PostgreSQL', '了解 ERC-721 / 1155'],
+    benefits: ['合同制 12 个月', '远程办公', '按月结算'], age: 8, applicants: 16,
+  },
+  {
+    id: 8, companyId: 1, title: 'Protocol Researcher', category: '研究',
+    skills: ['Consensus', 'Research', 'Rust', 'Economics'], location: 'Remote · Global',
+    salaryMin: 160000, salaryMax: 250000, jobType: 'full-time', workMode: 'remote', experience: 'senior',
+    description: '研究共识机制、激励设计与经济安全，输出可落地的协议改进提案。',
+    responsibilities: ['研究共识与网络层改进', '建模经济安全与激励', '撰写 RFC / 研究报告', '与社区讨论并推进提案'],
+    requirements: ['分布式系统或密码学背景', '有论文或 EIP 贡献', '精通 Rust 或 Go', '强逻辑与写作能力'],
+    benefits: ['研究自由度高', '会议差旅支持', '全球远程', '代币激励'], age: 9, applicants: 11,
+  },
+  {
+    id: 9, companyId: 5, title: 'Rollup Infrastructure Intern', category: 'Layer 2',
+    skills: ['Go', 'Kubernetes', 'Linux', 'Monitoring'], location: 'Remote · Asia',
+    salaryMin: 30000, salaryMax: 48000, jobType: 'internship', workMode: 'remote', experience: 'entry',
+    description: '协助维护 Rollup 节点与监控系统，学习 L2 运维与可观测性实践。',
+    responsibilities: ['协助部署与维护节点', '搭建监控与告警', '编写运维文档', '参与故障复盘'],
+    requirements: ['计算机相关专业在读', '熟悉 Linux 与 Docker', '学习能力强', '对区块链有热情'],
+    benefits: ['导师制', '转正机会', '远程办公'], age: 11, applicants: 63,
+  },
+  {
+    id: 10, companyId: 3, title: 'Quant Researcher (DeFi)', category: 'DeFi',
+    skills: ['Python', 'Quant', 'Solidity', 'Data'], location: 'London, UK',
+    salaryMin: 180000, salaryMax: 260000, jobType: 'full-time', workMode: 'onsite', experience: 'senior',
+    description: '研究链上做市、清算与收益策略，构建风险模型并与工程团队协作上线。',
+    responsibilities: ['构建链上策略与风险模型', '回测与参数优化', '监控策略表现', '与合约团队对接实现'],
+    requirements: ['量化研究或金融工程背景', '熟练 Python / SQL', '理解 AMM 与借贷协议', '有链上数据分析经验'],
+    benefits: ['绩效奖金', '代币激励', '伦敦办公室', '健康保险'], age: 12, applicants: 22,
+  },
+  {
+    id: 11, companyId: 2, title: 'Security Engineer · Wallet', category: '安全',
+    skills: ['Rust', 'Security', 'Cryptography', 'Mobile'], location: 'Remote · APAC',
+    salaryMin: 150000, salaryMax: 230000, jobType: 'full-time', workMode: 'remote', experience: 'senior',
+    description: '负责钱包密钥管理、签名流程与端侧安全架构，主导威胁建模与安全评审。',
+    responsibilities: ['密钥管理与签名模块设计', '威胁建模与渗透测试', '安全代码评审', '安全事件响应'],
+    requirements: ['5 年以上安全开发经验', '精通 Rust 或 C++', '熟悉移动端安全', '密码学基础扎实'],
+    benefits: ['安全津贴', '全球远程', '培训预算', '代币激励'], age: 14, applicants: 18,
+  },
+  {
+    id: 12, companyId: 1, title: 'Technical Writer (Developer Relations)', category: 'Layer 1',
+    skills: ['Writing', 'Docs', 'Developer Relations', 'Rust'], location: 'Remote · Global',
+    salaryMin: 80000, salaryMax: 120000, jobType: 'part-time', workMode: 'remote', experience: 'entry',
+    description: '撰写协议文档、教程与开发者指南，提升开发者上手体验。',
+    responsibilities: ['维护文档站与 API 参考', '撰写教程与示例项目', '收集开发者反馈', '参与社区答疑'],
+    requirements: ['优秀的技术写作能力', '了解区块链基础', '能阅读 Rust / TS 代码', '英文流利'],
+    benefits: ['兼职灵活', '全球远程', '开源贡献机会'], age: 16, applicants: 14,
+  },
+  {
+    id: 13, companyId: 4, title: 'Growth Marketing Manager', category: 'NFT',
+    skills: ['Marketing', 'Growth', 'Analytics', 'Content'], location: 'Berlin, Germany',
+    salaryMin: 85000, salaryMax: 120000, jobType: 'full-time', workMode: 'hybrid', experience: 'mid',
+    description: '制定 NFT 平台增长策略，管理渠道投放与创作者合作。',
+    responsibilities: ['制定增长与品牌策略', '管理渠道预算与归因', '拓展创作者合作', '输出数据复盘'],
+    requirements: ['3 年以上增长经验', '熟悉 Web3 营销渠道', '数据驱动', '团队管理经验'],
+    benefits: ['柏林办公', '创意预算', '代币激励'], age: 18, status: 'pending', applicants: 0,
+  },
+];
+
+export const seedJobs = (): Job[] =>
+  jobSeeds.map(({ age, status, applicants, ...job }) => ({
+    ...job,
+    status: status ?? 'published',
+    publishedAt: ago(age),
+    expiresAt: ahead(30 - age),
+    applicantCount: applicants ?? 0,
+  }));
+
+export const seedUsers = (): User[] => [
+  {
+    id: 1, email: 'candidate@demo.com', password: 'Demo1234', name: 'Alice Chen', role: 'candidate', status: 'active',
+    avatar: 'https://placehold.co/120x120/6d28d9/ffffff?text=AC', location: 'Singapore',
+    headline: 'Full-stack Web3 Engineer', skills: ['TypeScript', 'React', 'Solidity'], resumeName: 'alice-chen-resume.pdf', createdAt: ago(60),
+  },
+  {
+    id: 2, email: 'employer@demo.com', password: 'Demo1234', name: 'Bob Liu', role: 'employer', status: 'active',
+    avatar: 'https://placehold.co/120x120/0369a1/ffffff?text=BL', location: 'Remote', headline: 'Head of Talent @ LayerForge',
+    skills: [], companyId: 1, createdAt: ago(90),
+  },
+  {
+    id: 3, email: 'admin@demo.com', password: 'Demo1234', name: 'Platform Admin', role: 'admin', status: 'active',
+    avatar: 'https://placehold.co/120x120/be123c/ffffff?text=AD', location: 'Remote', headline: 'Trust & Safety', skills: [], createdAt: ago(120),
+  },
+  {
+    id: 4, email: 'dave@pixeldao.xyz', password: 'Demo1234', name: 'Dave Müller', role: 'employer', status: 'pending',
+    avatar: 'https://placehold.co/120x120/7c3aed/ffffff?text=DM', location: 'Berlin', headline: 'Founder @ PixelDAO',
+    skills: [], companyId: 4, createdAt: ago(5),
+  },
+  {
+    id: 5, email: 'eve@example.com', password: 'Demo1234', name: 'Eve Zhang', role: 'candidate', status: 'active',
+    avatar: 'https://placehold.co/120x120/15803d/ffffff?text=EZ', location: 'Hong Kong', headline: 'Security Researcher',
+    skills: ['Solidity', 'Audit'], resumeName: 'eve-zhang-cv.pdf', createdAt: ago(20),
+  },
+];
+
+export const seedApplications = (): Application[] => [
+  { id: 1, jobId: 1, userId: 1, status: 'viewed', appliedAt: ago(3), resumeName: 'alice-chen-resume.pdf' },
+  { id: 2, jobId: 3, userId: 1, status: 'interviewing', appliedAt: ago(6), resumeName: 'alice-chen-resume.pdf' },
+  { id: 3, jobId: 1, userId: 5, status: 'applied', appliedAt: ago(1), resumeName: 'eve-zhang-cv.pdf', note: '有 3 年合约审计经验，期待交流。' },
+  { id: 4, jobId: 8, userId: 5, status: 'applied', appliedAt: ago(2), resumeName: 'eve-zhang-cv.pdf' },
+];
+
+export const seedNotifications = (): Notification[] => [
+  { id: 1, userId: 1, title: '简历已被查看', body: 'LayerForge 查看了你对 Senior Solidity Engineer 的申请。', read: false, createdAt: ago(2) },
+  { id: 2, userId: 1, title: '进入面试阶段', body: 'Northstar Finance 邀请你进入 Frontend Engineer · DeFi 的面试流程。', read: false, createdAt: ago(1) },
+  { id: 3, userId: 1, title: '欢迎加入 Web3 Career', body: '完善资料并上传简历，可获得更精准的岗位推荐。', read: true, createdAt: ago(30) },
+];
+
+export const seedReports = (): Report[] => [
+  { id: 1, jobId: 7, reason: '疑似虚假薪资描述', reporter: 'eve@example.com', status: 'open', createdAt: ago(1) },
+  { id: 2, jobId: 9, reason: '岗位信息重复发布', reporter: 'candidate@demo.com', status: 'open', createdAt: ago(3) },
+];
+
+export const seedFavorites = (): Map<number, Set<number>> => new Map([[1, new Set([1, 3, 4])]]);
