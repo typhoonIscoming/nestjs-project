@@ -3,11 +3,12 @@
 	"version": "1.0.0",
 	"private": true,
 	"scripts": {
-		"dev": "next dev -p 3000",
+		"dev": "npm run clean && next dev",
 		"build": "next build",
 		"start": "next start -p 3000",
 		"format": "prettier --write \"**/*.{ts,tsx,js,jsx,mjs,css,json}\"",
 		"format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mjs,css,json}\"",
+		"clean": "rm -rf .next",
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {

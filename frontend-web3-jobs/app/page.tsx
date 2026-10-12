@@ -4,6 +4,7 @@ import HeroSearch from '@/components/HeroSearch';
 import JobCard from '@/components/JobCard';
 import CompanyCard from '@/components/CompanyCard';
 import ShareButtons from '@/components/ShareButtons';
+import CryptoMarket from '@/components/CryptoMarket';
 import { serverGetSafe, SITE_URL } from '@/lib/server-api';
 import type { Company, Job, JobMeta, Listed, Paged } from '@/types';
 
@@ -116,6 +117,8 @@ export default async function HomePage() {
 					))}
 				</ul>
 			</section>
+
+			<CryptoMarket />
 
 			<section className="container-page py-10" aria-labelledby="hot-title">
 				<div className="mb-5 flex items-end justify-between">
