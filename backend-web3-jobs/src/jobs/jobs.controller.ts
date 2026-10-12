@@ -10,30 +10,34 @@ import {
 	Post,
 	Query,
 } from '@nestjs/common';
-import { AppService, JobQuery } from './app.service';
+import { AuthService } from '../auth/auth.service';
+import { JobQuery, JobsService } from './jobs.service';
 
 @Controller('api/jobs')
 export class JobsController {
-	constructor(@Inject(AppService) private readonly appService: AppService) {}
+	constructor(
+		@Inject(AuthService) private readonly authService: AuthService,
+		@Inject(JobsService) private readonly jobsService: JobsService
+	) {}
 
 	@Get()
 	list(@Query() query: JobQuery) {
-		return this.appService.listJobs(query);
+		return this.jobsService.listJobs(query);
 	}
 
 	@Get('meta')
 	meta() {
-		return this.appService.jobMeta();
+		return this.jobsService.jobMeta();
 	}
 
 	@Get(':id')
 	detail(@Param('id', ParseIntPipe) id: number) {
-		return this.appService.getJob(id);
+		return this.jobsService.getJob(id);
 	}
 
 	@Get(':id/related')
 	related(@Param('id', ParseIntPipe) id: number) {
-		return this.appService.relatedJobs(id);
+		return this.jobsService.relatedJobs(id);
 	}
 
 	@Post(':id/apply')
@@ -42,8 +46,8 @@ export class JobsController {
 		@Param('id', ParseIntPipe) id: number,
 		@Body() body: Record<string, any>
 	) {
-		return this.appService.apply(
-			this.appService.authenticate(auth, ['candidate']),
+		return this.jobsService.apply(
+			this.authService.authenticate(auth, ['candidate']),
 			id,
 			body ?? {}
 		);
@@ -54,7 +58,7 @@ export class JobsController {
 		@Headers('authorization') auth: string | undefined,
 		@Param('id', ParseIntPipe) id: number
 	) {
-		return this.appService.addFavorite(this.appService.authenticate(auth, ['candidate']), id);
+		return this.jobsService.addFavorite(this.authService.authenticate(auth, ['candidate']), id);
 	}
 
 	@Delete(':id/favorite')
@@ -62,8 +66,8 @@ export class JobsController {
 		@Headers('authorization') auth: string | undefined,
 		@Param('id', ParseIntPipe) id: number
 	) {
-		return this.appService.removeFavorite(
-			this.appService.authenticate(auth, ['candidate']),
+		return this.jobsService.removeFavorite(
+			this.authService.authenticate(auth, ['candidate']),
 			id
 		);
 	}
@@ -74,7 +78,7 @@ export class JobsController {
 		@Param('id', ParseIntPipe) id: number,
 		@Body() body: Record<string, any>
 	) {
-		return this.appService.createReport(this.appService.authenticate(auth), {
+		return this.jobsService.createReport(this.authService.authenticate(auth), {
 			...body,
 			jobId: id,
 		});

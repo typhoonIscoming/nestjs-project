@@ -1,27 +1,27 @@
 import { Body, Controller, Get, Headers, Inject, Post } from '@nestjs/common';
-import { AppService } from './app.service';
+import { AuthService } from './auth.service';
 
 @Controller('api/auth')
 export class AuthController {
-	constructor(@Inject(AppService) private readonly appService: AppService) {}
+	constructor(@Inject(AuthService) private readonly authService: AuthService) {}
 
 	@Post('register')
 	register(@Body() body: Record<string, any>) {
-		return this.appService.register(body ?? {});
+		return this.authService.register(body ?? {});
 	}
 
 	@Post('login')
 	login(@Body() body: Record<string, any>) {
-		return this.appService.login(body ?? {});
+		return this.authService.login(body ?? {});
 	}
 
 	@Post('password-reset')
 	passwordReset(@Body() body: Record<string, any>) {
-		return this.appService.requestPasswordReset(body ?? {});
+		return this.authService.requestPasswordReset(body ?? {});
 	}
 
 	@Get('me')
 	me(@Headers('authorization') auth: string | undefined) {
-		return this.appService.me(this.appService.authenticate(auth));
+		return this.authService.me(this.authService.authenticate(auth));
 	}
 }

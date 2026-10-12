@@ -10,29 +10,33 @@ import {
 	Put,
 	Query,
 } from '@nestjs/common';
-import { AppService } from './app.service';
+import { AuthService } from '../auth/auth.service';
+import { EmployerService } from './employer.service';
 
 @Controller('api/employer')
 export class EmployerController {
-	constructor(@Inject(AppService) private readonly appService: AppService) {}
+	constructor(
+		@Inject(AuthService) private readonly authService: AuthService,
+		@Inject(EmployerService) private readonly employerService: EmployerService
+	) {}
 
 	private auth(header: string | undefined) {
-		return this.appService.authenticate(header, ['employer']);
+		return this.authService.authenticate(header, ['employer']);
 	}
 
 	@Get('jobs')
 	jobs(@Headers('authorization') auth: string | undefined) {
-		return this.appService.employerJobs(this.auth(auth));
+		return this.employerService.employerJobs(this.auth(auth));
 	}
 
 	@Post('jobs')
 	create(@Headers('authorization') auth: string | undefined, @Body() body: Record<string, any>) {
-		return this.appService.createJob(this.auth(auth), body ?? {});
+		return this.employerService.createJob(this.auth(auth), body ?? {});
 	}
 
 	@Get('jobs/:id')
 	job(@Headers('authorization') auth: string | undefined, @Param('id', ParseIntPipe) id: number) {
-		return this.appService.employerJob(this.auth(auth), id);
+		return this.employerService.employerJob(this.auth(auth), id);
 	}
 
 	@Put('jobs/:id')
@@ -41,7 +45,7 @@ export class EmployerController {
 		@Param('id', ParseIntPipe) id: number,
 		@Body() body: Record<string, any>
 	) {
-		return this.appService.updateJob(this.auth(auth), id, body ?? {});
+		return this.employerService.updateJob(this.auth(auth), id, body ?? {});
 	}
 
 	@Post('jobs/:id/offline')
@@ -49,7 +53,7 @@ export class EmployerController {
 		@Headers('authorization') auth: string | undefined,
 		@Param('id', ParseIntPipe) id: number
 	) {
-		return this.appService.offlineJob(this.auth(auth), id);
+		return this.employerService.offlineJob(this.auth(auth), id);
 	}
 
 	@Post('jobs/:id/republish')
@@ -57,7 +61,7 @@ export class EmployerController {
 		@Headers('authorization') auth: string | undefined,
 		@Param('id', ParseIntPipe) id: number
 	) {
-		return this.appService.republishJob(this.auth(auth), id);
+		return this.employerService.republishJob(this.auth(auth), id);
 	}
 
 	@Get('applications')
@@ -65,7 +69,7 @@ export class EmployerController {
 		@Headers('authorization') auth: string | undefined,
 		@Query() query: { jobId?: string; status?: string; keyword?: string }
 	) {
-		return this.appService.employerApplications(this.auth(auth), query);
+		return this.employerService.employerApplications(this.auth(auth), query);
 	}
 
 	@Post('applications/:id/status')
@@ -74,12 +78,12 @@ export class EmployerController {
 		@Param('id', ParseIntPipe) id: number,
 		@Body() body: Record<string, any>
 	) {
-		return this.appService.updateApplicationStatus(this.auth(auth), id, body ?? {});
+		return this.employerService.updateApplicationStatus(this.auth(auth), id, body ?? {});
 	}
 
 	@Get('company')
 	company(@Headers('authorization') auth: string | undefined) {
-		return this.appService.getEmployerCompany(this.auth(auth));
+		return this.employerService.getEmployerCompany(this.auth(auth));
 	}
 
 	@Put('company')
@@ -87,6 +91,6 @@ export class EmployerController {
 		@Headers('authorization') auth: string | undefined,
 		@Body() body: Record<string, any>
 	) {
-		return this.appService.updateEmployerCompany(this.auth(auth), body ?? {});
+		return this.employerService.updateEmployerCompany(this.auth(auth), body ?? {});
 	}
 }

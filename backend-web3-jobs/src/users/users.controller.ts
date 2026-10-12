@@ -1,17 +1,21 @@
 import { Body, Controller, Get, Headers, Inject, Post, Put } from '@nestjs/common';
-import { AppService } from './app.service';
+import { AuthService } from '../auth/auth.service';
+import { UsersService } from './users.service';
 
 @Controller('api/users')
 export class UsersController {
-	constructor(@Inject(AppService) private readonly appService: AppService) {}
+	constructor(
+		@Inject(AuthService) private readonly authService: AuthService,
+		@Inject(UsersService) private readonly usersService: UsersService
+	) {}
 
 	private auth(header: string | undefined) {
-		return this.appService.authenticate(header);
+		return this.authService.authenticate(header);
 	}
 
 	@Get('profile')
 	profile(@Headers('authorization') auth: string | undefined) {
-		return this.appService.me(this.auth(auth));
+		return this.usersService.me(this.auth(auth));
 	}
 
 	@Put('profile')
@@ -19,26 +23,26 @@ export class UsersController {
 		@Headers('authorization') auth: string | undefined,
 		@Body() body: Record<string, any>
 	) {
-		return this.appService.updateProfile(this.auth(auth), body ?? {});
+		return this.usersService.updateProfile(this.auth(auth), body ?? {});
 	}
 
 	@Get('applications')
 	applications(@Headers('authorization') auth: string | undefined) {
-		return this.appService.listApplications(this.auth(auth));
+		return this.usersService.listApplications(this.auth(auth));
 	}
 
 	@Get('favorites')
 	favorites(@Headers('authorization') auth: string | undefined) {
-		return this.appService.listFavorites(this.auth(auth));
+		return this.usersService.listFavorites(this.auth(auth));
 	}
 
 	@Get('notifications')
 	notifications(@Headers('authorization') auth: string | undefined) {
-		return this.appService.listNotifications(this.auth(auth));
+		return this.usersService.listNotifications(this.auth(auth));
 	}
 
 	@Post('notifications/read')
 	readNotifications(@Headers('authorization') auth: string | undefined) {
-		return this.appService.markNotificationsRead(this.auth(auth));
+		return this.usersService.markNotificationsRead(this.auth(auth));
 	}
 }

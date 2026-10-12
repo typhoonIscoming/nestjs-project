@@ -1,24 +1,28 @@
 import { Body, Controller, Get, Headers, Inject, Param, ParseIntPipe, Post } from '@nestjs/common';
-import { AppService } from './app.service';
+import { AuthService } from '../auth/auth.service';
+import { AdminService } from './admin.service';
 
 @Controller('api/admin')
 export class AdminController {
-	constructor(@Inject(AppService) private readonly appService: AppService) {}
+	constructor(
+		@Inject(AuthService) private readonly authService: AuthService,
+		@Inject(AdminService) private readonly adminService: AdminService
+	) {}
 
 	private auth(header: string | undefined) {
-		return this.appService.authenticate(header, ['admin']);
+		return this.authService.authenticate(header, ['admin']);
 	}
 
 	@Get('stats')
 	stats(@Headers('authorization') auth: string | undefined) {
 		this.auth(auth);
-		return this.appService.adminStats();
+		return this.adminService.adminStats();
 	}
 
 	@Get('jobs/review')
 	pendingJobs(@Headers('authorization') auth: string | undefined) {
 		this.auth(auth);
-		return this.appService.adminPendingJobs();
+		return this.adminService.adminPendingJobs();
 	}
 
 	@Post('jobs/:id/review')
@@ -28,13 +32,13 @@ export class AdminController {
 		@Body() body: Record<string, any>
 	) {
 		this.auth(auth);
-		return this.appService.reviewJob(id, body ?? {});
+		return this.adminService.reviewJob(id, body ?? {});
 	}
 
 	@Get('users')
 	users(@Headers('authorization') auth: string | undefined) {
 		this.auth(auth);
-		return this.appService.adminUsers();
+		return this.adminService.adminUsers();
 	}
 
 	@Post('users/:id/review')
@@ -44,13 +48,13 @@ export class AdminController {
 		@Body() body: Record<string, any>
 	) {
 		this.auth(auth);
-		return this.appService.reviewUser(id, body ?? {});
+		return this.adminService.reviewUser(id, body ?? {});
 	}
 
 	@Get('reports')
 	reports(@Headers('authorization') auth: string | undefined) {
 		this.auth(auth);
-		return this.appService.adminReports();
+		return this.adminService.adminReports();
 	}
 
 	@Post('reports/:id/resolve')
@@ -60,6 +64,6 @@ export class AdminController {
 		@Body() body: Record<string, any>
 	) {
 		this.auth(auth);
-		return this.appService.resolveReport(id, body ?? {});
+		return this.adminService.resolveReport(id, body ?? {});
 	}
 }

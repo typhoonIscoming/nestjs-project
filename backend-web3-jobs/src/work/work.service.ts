@@ -1,8 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
-@Controller('api/work')
-export class WorkController {
-	@Get('list')
+@Injectable()
+export class WorkService {
 	getWorkList() {
 		return {
 			list: [
