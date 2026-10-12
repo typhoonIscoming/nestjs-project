@@ -1,22 +1,22 @@
-import { Controller, Get, Inject, Param, ParseIntPipe } from "@nestjs/common";
-import { AppService } from "./app.service";
+import { Controller, Get, Inject, Param, ParseIntPipe } from '@nestjs/common';
+import { AppService } from './app.service';
 
-@Controller("api/companies")
+@Controller('api/companies')
 export class CompaniesController {
-  constructor(@Inject(AppService) private readonly appService: AppService) {}
+	constructor(@Inject(AppService) private readonly appService: AppService) {}
 
-  @Get()
-  list() {
-    return this.appService.listCompanies();
-  }
+	@Get()
+	list() {
+		return this.appService.listCompanies();
+	}
 
-  @Get(":id")
-  detail(@Param("id", ParseIntPipe) id: number) {
-    return this.appService.getCompany(id);
-  }
+	@Get(':id')
+	detail(@Param('id', ParseIntPipe) id: number) {
+		return this.appService.getCompany(id);
+	}
 
-  @Get(":id/jobs")
-  jobs(@Param("id", ParseIntPipe) id: number) {
-    return this.appService.companyJobs(id);
-  }
+	@Get(':id/jobs')
+	jobs(@Param('id', ParseIntPipe) id: number) {
+		return this.appService.companyJobs(id);
+	}
 }
